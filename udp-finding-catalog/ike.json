@@ -1,0 +1,90 @@
+{
+  "ike_responds_main_mode": {
+    "severity": "info",
+    "title": "IKE Main Mode VPN Endpoint Detected",
+    "description": "The target responds to IKE (Internet Key Exchange) main mode handshake requests on UDP/500, indicating an IPsec VPN endpoint is present.",
+    "impact": "Informational. Confirms the host is acting as a VPN gateway. Combined with weak crypto findings (3DES, SHA1, modp1024) or aggressive-mode support, this becomes a security concern.",
+    "remediation": "If this endpoint is not intended to be publicly reachable, restrict UDP/500 at the perimeter firewall. Otherwise, ensure the VPN configuration uses strong crypto (AES-256, SHA-256, DH group 14 or higher) and disables aggressive mode.",
+    "evidence_template": "ike-scan against {{host}}:500 received Main Mode SA: {{sa_proposal}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": []
+  },
+  "ike_aggressive_mode_supported": {
+    "severity": "high",
+    "title": "IKE Aggressive Mode Supported (PSK Hash Disclosure)",
+    "description": "The IKE endpoint accepts IKEv1 Aggressive Mode handshakes. In Aggressive Mode, the responder's PSK-derived hash is sent in cleartext as part of the third message, allowing an attacker to capture it via passive sniffing or by sending a probe themselves and to perform offline brute-force or dictionary attacks against the PSK.",
+    "impact": "An attacker who can reach UDP/500 can recover the IKE PSK offline given sufficient time and a wordlist. With the PSK, the attacker can join the VPN as a legitimate peer or decrypt captured tunnel traffic. CVE-2002-1623 (CVE-2003-0078) and related work document this vulnerability class.",
+    "remediation": "Disable IKEv1 Aggressive Mode at the VPN gateway. Migrate to IKEv2 (which has no equivalent vulnerability) or use IKEv1 Main Mode with certificate authentication instead of PSK.",
+    "evidence_template": "ike-scan against {{host}}:500 received Aggressive Mode SA: {{sa_proposal}}",
+    "cwe_id": "CWE-326",
+    "owasp_ref": "A02:2021 Cryptographic Failures",
+    "cve_refs": ["CVE-2002-1623"]
+  },
+  "ike_weak_encryption_3des": {
+    "severity": "medium",
+    "title": "IKE Weak Encryption: 3DES",
+    "description": "The IKE endpoint advertises 3DES (Triple DES) as a supported encryption algorithm in its Security Association proposal. 3DES has a 64-bit block size making it vulnerable to Sweet32 birthday attacks on long-lived tunnels (CVE-2016-2183) and is end-of-life per NIST SP 800-131A.",
+    "impact": "Sweet32 enables recovery of plaintext from 3DES-encrypted ciphertext after ~32 GB of data in a single tunnel session. While IPsec rekeys help, long-running tunnels (site-to-site VPNs) are most exposed.",
+    "remediation": "Remove 3DES from the IKE SA proposal list at the VPN gateway. Use AES-256-CBC (or AES-256-GCM if supported) as the only encryption algorithm.",
+    "evidence_template": "Host {{host}} IKE SA proposal includes Enc=3DES: {{sa_proposal}}",
+    "cwe_id": "CWE-327",
+    "owasp_ref": "A02:2021 Cryptographic Failures",
+    "cve_refs": ["CVE-2016-2183"]
+  },
+  "ike_weak_encryption_des": {
+    "severity": "high",
+    "title": "IKE Weak Encryption: DES (Single-DES)",
+    "description": "The IKE endpoint advertises single-DES as a supported encryption algorithm in its Security Association proposal. DES has a 56-bit effective key and has been considered broken since the late 1990s — brute-force recovery of a DES key is feasible on commodity hardware in under a day.",
+    "impact": "An attacker who captures a DES-encrypted IKE exchange (or the resulting IPsec tunnel) can decrypt it in operationally short time using rented compute. This is materially worse than 3DES: there is no scenario in 2026 where DES is acceptable for a security-critical channel.",
+    "remediation": "Remove DES from the IKE SA proposal list immediately. The VPN gateway likely also has it enabled for the ESP/AH transforms — check those too. Use AES-256 instead.",
+    "evidence_template": "Host {{host}} IKE SA proposal includes Enc=DES (single-DES, 56-bit): {{sa_proposal}}",
+    "cwe_id": "CWE-327",
+    "owasp_ref": "A02:2021 Cryptographic Failures",
+    "cve_refs": []
+  },
+  "ike_weak_hash_sha1": {
+    "severity": "medium",
+    "title": "IKE Weak Hash: SHA-1",
+    "description": "The IKE endpoint advertises SHA-1 as a supported integrity/PRF algorithm. SHA-1 is collision-vulnerable (SHAttered, CVE-2017-15999 and earlier) and deprecated by NIST.",
+    "impact": "SHA-1 collisions could allow an attacker who controls both endpoints (e.g., MITM during initial setup) to forge IKE messages. Less catastrophic in normal IPsec operation but still represents a cryptographic weakness on a security-critical channel.",
+    "remediation": "Remove SHA-1 from the IKE SA proposal. Use SHA-256 or SHA-384 for both integrity and PRF.",
+    "evidence_template": "Host {{host}} IKE SA proposal includes Hash=SHA1: {{sa_proposal}}",
+    "cwe_id": "CWE-327",
+    "owasp_ref": "A02:2021 Cryptographic Failures",
+    "cve_refs": []
+  },
+  "ike_weak_hash_md5": {
+    "severity": "medium",
+    "title": "IKE Weak Hash: MD5",
+    "description": "The IKE endpoint advertises MD5 as a supported integrity/PRF algorithm. MD5 has been considered cryptographically broken since 2004 (collisions demonstrated in seconds on commodity hardware) and is deprecated by NIST SP 800-131A for digital signatures and message authentication codes.",
+    "impact": "Collisions in MD5 are practical at scale; an attacker who controls one or both endpoints during setup can forge IKE messages or HMAC tokens. While the IPsec HMAC-MD5 construction is more resilient than raw MD5, the algorithm class is broken and shouldn't be on a security-critical channel.",
+    "remediation": "Remove MD5 from the IKE SA proposal. Use SHA-256 or SHA-384 for both integrity and PRF.",
+    "evidence_template": "Host {{host}} IKE SA proposal includes Hash=MD5: {{sa_proposal}}",
+    "cwe_id": "CWE-327",
+    "owasp_ref": "A02:2021 Cryptographic Failures",
+    "cve_refs": []
+  },
+  "ike_weak_dh_group_1": {
+    "severity": "high",
+    "title": "IKE Weak Diffie-Hellman Group 1 (modp768)",
+    "description": "The IKE endpoint advertises Diffie-Hellman Group 1 (768-bit MODP) for key exchange. 768-bit DH has been trivially breakable on academic hardware since 2015 (Logjam, CVE-2015-4000) and is unambiguously broken in 2026.",
+    "impact": "Any attacker with modest cloud compute (~$100) can recover the IKE shared secret from a captured handshake and decrypt the resulting IPsec tunnel. Practical decryption of historic traffic is also possible if pcaps were stored.",
+    "remediation": "Remove Group 1 (modp768) from the IKE SA proposal immediately. Use Group 14 (modp2048) at minimum, preferably Group 19/20/21 (ECP) or Group 24 (modp2048/256).",
+    "evidence_template": "Host {{host}} IKE SA proposal includes Group=1 (modp768, 768-bit): {{sa_proposal}}",
+    "cwe_id": "CWE-326",
+    "owasp_ref": "A02:2021 Cryptographic Failures",
+    "cve_refs": ["CVE-2015-4000"]
+  },
+  "ike_weak_dh_group_2": {
+    "severity": "medium",
+    "title": "IKE Weak Diffie-Hellman Group 2 (modp1024)",
+    "description": "The IKE endpoint advertises Diffie-Hellman Group 2 (1024-bit MODP) for key exchange. The Logjam attack (CVE-2015-4000) and follow-on academic work demonstrate that nation-state-level adversaries can break 1024-bit DH given precomputation against the common moduli used by major VPN implementations.",
+    "impact": "An adversary with sufficient resources (nation-state or large compute) can recover the IKE shared secret and decrypt the tunnel. While not within reach of most attackers, modp1024 is deprecated by NIST SP 800-131A and IETF (RFC 8247).",
+    "remediation": "Remove Group 2 (modp1024) from the IKE SA proposal. Use Group 14 (modp2048) at minimum; Group 19/20/21 (ECP) or Group 24 (modp2048/256) preferred where supported.",
+    "evidence_template": "Host {{host}} IKE SA proposal includes Group=2:modp1024: {{sa_proposal}}",
+    "cwe_id": "CWE-326",
+    "owasp_ref": "A02:2021 Cryptographic Failures",
+    "cve_refs": ["CVE-2015-4000"]
+  }
+}
