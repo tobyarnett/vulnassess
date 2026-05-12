@@ -1,0 +1,24 @@
+{
+  "snmp_default_community": {
+    "severity": "high",
+    "title": "SNMP Default Community String Accepted",
+    "description": "The SNMP daemon on UDP/161 accepts a well-known default community string (public, private, etc.) for SNMPv2c read access. Community strings are sent in plaintext and act as a shared secret for authentication.",
+    "impact": "An attacker on the network can read sensitive device information (interface counters, routing tables, ARP caches, running processes on some platforms) and use this information to pivot, map the network, or identify high-value targets. With write community access, the attacker can modify device configuration.",
+    "remediation": "Change the SNMP community string to a non-default high-entropy value. Better: migrate to SNMPv3 which provides encrypted authentication. Restrict UDP/161 to management VLAN at the firewall.",
+    "evidence_template": "Host {{host}} accepted community \"{{community}}\" and exposed {{oid_count}} OIDs from the system MIB. sysDescr: {{sysdescr}}",
+    "cwe_id": "CWE-798",
+    "owasp_ref": "A07:2021 Identification and Authentication Failures",
+    "cve_refs": []
+  },
+  "snmp_data_dump_v2c": {
+    "severity": "medium",
+    "title": "SNMP v2c Unauthenticated Data Disclosure",
+    "description": "The SNMP daemon responds to SNMPv2c queries with a community string that the attacker discovered. snmpwalk successfully enumerated the system MIB without further authentication.",
+    "impact": "Device information disclosure: device model, OS version, hostname, contact info, location, uptime. Attackers use this to fingerprint targets and search for known CVEs against the disclosed software.",
+    "remediation": "Same as snmp_default_community — change community + restrict at firewall + prefer SNMPv3.",
+    "evidence_template": "snmpwalk against {{host}} with community \"{{community}}\" returned {{oid_count}} OIDs. sysName: {{sysname}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A01:2021 Broken Access Control",
+    "cve_refs": []
+  }
+}

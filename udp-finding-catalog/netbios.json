@@ -1,0 +1,24 @@
+{
+  "netbios_nbstat_disclosure": {
+    "severity": "low",
+    "title": "NetBIOS NBSTAT Information Disclosure (UDP/137)",
+    "description": "The host responds to NBSTAT (NetBIOS name service status) queries on UDP/137 and discloses its NetBIOS machine name and MAC address without authentication.",
+    "impact": "Reveals the host's NetBIOS computer name (often the AD computer-account name) and MAC address. Attackers use the MAC for OUI-based vendor fingerprinting and the NetBIOS name for AD reconnaissance. Combined with port 445/SMB, this is a building block for null-session enumeration.",
+    "remediation": "Disable NetBIOS over TCP/IP on the network adapter if SMB-direct (port 445) is being used instead. On Windows: NIC properties → IPv4 → Advanced → WINS tab → \"Disable NetBIOS over TCP/IP\". On servers, ensure NetBIOS is bound only to management interfaces.",
+    "evidence_template": "nbtscan against {{host}}:137 returned NetBIOS name \"{{netbios_name}}\" with MAC {{mac}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": []
+  },
+  "netbios_server_role": {
+    "severity": "info",
+    "title": "NetBIOS Server Role Detected",
+    "description": "NBSTAT response includes the <server> role indicator, meaning the host advertises itself as a NetBIOS file/print server.",
+    "impact": "Informational — confirms the host has SMB-share-related services running. Cross-reference with port 445 findings (SMB null session, unsigned SMB, etc.) for compound severity.",
+    "remediation": "If this host is not intended to provide file or print sharing, disable Server service. If it IS intended, ensure shares require authentication and SMB signing is mandatory.",
+    "evidence_template": "Host {{host}} (NetBIOS name {{netbios_name}}) advertises <server> role on UDP/137",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": []
+  }
+}
