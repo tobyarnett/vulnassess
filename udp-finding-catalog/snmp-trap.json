@@ -1,0 +1,14 @@
+{
+  "snmp_trap_open_udp": {
+    "severity": "low",
+    "title": "SNMP Trap Receiver Accessible (UDP/162)",
+    "description": "An SNMP trap receiver is accepting UDP messages on port 162. Like syslog, SNMP traps are write-only with no protocol-level authentication (in v1/v2c).",
+    "impact": "Same threat model as syslog: attackers can inject fake trap events to confuse monitoring, flood the receiver for log-volume DoS, or exploit downstream SIEM parsers.",
+    "remediation": "Restrict UDP/162 to known SNMP-managed device IPs at the firewall. Migrate trap receivers to SNMPv3 which provides authenticated traps.",
+    "evidence_template": "UDP/162 on {{host}} accepted an SNMP-trap-shaped packet.",
+    "cwe_id": "CWE-345",
+    "owasp_ref": "A09:2021 Security Logging and Monitoring Failures",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

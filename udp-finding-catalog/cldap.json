@@ -1,0 +1,14 @@
+{
+  "cldap_rootdse_disclosure": {
+    "severity": "low",
+    "title": "CLDAP rootDSE Information Disclosure",
+    "description": "The host responds to Connectionless LDAP (CLDAP) rootDSE queries on UDP/389. The rootDSE entry discloses domain naming context, DNS hostname, server name, and other directory metadata to anyone reaching the port.",
+    "impact": "Reveals the AD domain DN (e.g., `DC=corp,DC=example,DC=local`) and DC hostname. Attackers use this for AD reconnaissance — feeding the info into BloodHound, ldapsearch, or kerbrute follow-ups.",
+    "remediation": "CLDAP is typically only used by AD clients during discovery. If this host is internal-only, restrict UDP/389 at the firewall. If external CLDAP access is required (rare), disable rootDSE response via the AD LDAP policy (requires careful testing — some AD client workflows depend on it).",
+    "evidence_template": "CLDAP rootDSE query against {{host}}:389 returned defaultNamingContext: {{default_naming_context}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A01:2021 Broken Access Control",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

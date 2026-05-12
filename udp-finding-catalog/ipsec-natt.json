@@ -1,0 +1,14 @@
+{
+  "ipsec_natt_endpoint_detected": {
+    "severity": "low",
+    "title": "IPsec NAT-Traversal Endpoint Detected (UDP/4500)",
+    "description": "An IPsec endpoint is responding to IKE handshakes on UDP/4500, which is the NAT-Traversal encapsulation port. This indicates IPsec with NAT-T is configured — common for any VPN that must traverse NAT.",
+    "impact": "Information disclosure: confirms the host is acting as an IPsec VPN gateway. Combined with weak-crypto findings from the IKE catalog (3DES, SHA1, modp1024, etc.), this becomes a security concern. The NAT-T endpoint typically uses the same SA proposal as UDP/500.",
+    "remediation": "If this endpoint is not intended to be publicly reachable, restrict UDP/4500 at the perimeter firewall. Otherwise, ensure the IPsec configuration uses strong crypto (AES-256, SHA-256, DH group 14 or higher) and disables aggressive mode. See the corresponding IKE/500 findings for crypto-specific remediation.",
+    "evidence_template": "ike-scan against {{host}}:4500 with --nat-t received IKE handshake response",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

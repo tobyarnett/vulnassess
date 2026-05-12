@@ -1,0 +1,14 @@
+{
+  "dhcp_server_disclosure": {
+    "severity": "low",
+    "title": "DHCP Server Discovered on Local Subnet",
+    "description": "A DHCP server responded to a broadcast DHCPDISCOVER on the agent's local subnet. The server's IP and the offered IP are visible to all clients on the subnet.",
+    "impact": "Informational on managed networks. On guest/IoT segments, a rogue DHCP server can be used to redirect traffic (DHCP starvation + spoofing). Confirms one of: (a) the expected DHCP server, (b) a rogue DHCP server (red flag), (c) an old/forgotten DHCP service on a server that shouldn't be one.",
+    "remediation": "Verify the discovered server IP matches the network operator's expected DHCP server. If not, investigate the rogue DHCP source (e.g., a Windows server with the DHCP role accidentally enabled, or an attacker's box). Enable DHCP snooping at the switch level to prevent rogue DHCP attacks.",
+    "evidence_template": "Broadcast DHCPDISCOVER returned offer from server {{server_ip}}: offered IP {{offered_ip}}.",
+    "cwe_id": "CWE-345",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

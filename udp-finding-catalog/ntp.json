@@ -1,0 +1,26 @@
+{
+  "ntp_monlist_amplification": {
+    "severity": "high",
+    "title": "NTP monlist Amplification (CVE-2013-5211)",
+    "description": "The NTP daemon responds to the deprecated mode 7 `monlist` command, which returns a list of up to 600 recent peers. This is the basis of the well-known NTP amplification DDoS attack (amplification factor 200-500x).",
+    "impact": "Attackers can use the server as a DDoS reflector. NTP monlist amplification was responsible for multi-hundred-Gbps attacks in 2013-2014 and is still actively exploited.",
+    "remediation": "Upgrade ntpd to 4.2.7p26 or later (where monlist is disabled by default). Existing deployments: add `disable monitor` to ntp.conf. For ntpsec (the modern fork), monlist is removed entirely.",
+    "evidence_template": "NTP monlist response from {{host}} returned peer list — amplification possible.",
+    "cwe_id": "CWE-400",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": ["CVE-2013-5211"],
+    "exploitdb_refs": []
+  },
+  "ntp_version_disclosed": {
+    "severity": "info",
+    "title": "NTP Version Disclosure",
+    "description": "The NTP daemon responds to version queries with its software version string. Information disclosure only.",
+    "impact": "Reduces attacker's burden of identifying vulnerable versions for targeted exploitation.",
+    "remediation": "Modern ntpd doesn't expose useful version info by default. If running an older daemon, suppress mode 6/7 queries via `restrict default kod nomodify notrap nopeer noquery`.",
+    "evidence_template": "NTP version response from {{host}}: {{version}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

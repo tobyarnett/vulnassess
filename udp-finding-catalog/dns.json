@@ -1,0 +1,38 @@
+{
+  "dns_open_recursion": {
+    "severity": "high",
+    "title": "DNS Open Recursion Enabled",
+    "description": "The DNS server resolves recursive queries for external names from untrusted clients. This is commonly mistaken for a feature on internet-facing resolvers — but for authoritative-only servers it indicates a misconfiguration.",
+    "impact": "An attacker can use the server as a reflector/amplifier for DNS amplification DDoS attacks (response sizes 30-200x query sizes via ANY queries against high-TTL records). The server can also be used to bypass egress filtering on the customer's network.",
+    "remediation": "Disable recursion for queries from non-trusted networks. For BIND: `allow-recursion { trusted-acl; };`. For Unbound: set `access-control:` to limit recursive query sources. Authoritative-only nameservers should have recursion completely disabled.",
+    "evidence_template": "nmap NSE dns-recursion against {{host}}:53 confirms recursive queries are resolved.",
+    "cwe_id": "CWE-668",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  },
+  "dns_axfr_allowed": {
+    "severity": "high",
+    "title": "DNS Zone Transfer (AXFR) Allowed",
+    "description": "The DNS server responds to unauthenticated AXFR (zone transfer) requests and returns the full zone data. AXFR is intended for replication between authoritative servers and should be restricted to known secondary nameservers.",
+    "impact": "Discloses the complete internal DNS topology: hostnames, IP addresses, mail records, service records. Effectively a free internal-network reconnaissance for any attacker. CIS Benchmarks call this out as one of the highest-impact DNS misconfigurations.",
+    "remediation": "Restrict AXFR to trusted secondary nameserver IPs only. For BIND: `allow-transfer { secondary-ips; };`. For Microsoft DNS Server: zone properties → Zone Transfers tab → \"Only to servers listed on the Name Servers tab.\"",
+    "evidence_template": "AXFR successful against {{host}}: {{evidence}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A01:2021 Broken Access Control",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  },
+  "dns_version_disclosed": {
+    "severity": "low",
+    "title": "DNS Version Disclosure (version.bind CHAOS TXT)",
+    "description": "The DNS server responds to `version.bind` CHAOS TXT queries with its software version string. This is information disclosure — the version itself isn't a vulnerability but it makes it easier for attackers to identify exploitable known-CVE versions.",
+    "impact": "Reduces the attacker's burden of identifying vulnerable software versions. Pairs with CVE feeds for targeted attacks.",
+    "remediation": "Configure DNS server to suppress the version banner. BIND: `options { version \"hidden\"; };`. Unbound: `server: hide-version: yes`.",
+    "evidence_template": "version.bind CHAOS TXT response from {{host}}: {{version}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "openvpn_endpoint_detected": {
+    "severity": "low",
+    "title": "OpenVPN Endpoint Detected",
+    "description": "An OpenVPN server is responding to P_CONTROL_HARD_RESET_CLIENT_V2 probes on the target. The exposed VPN endpoint allows authorized users to tunnel into the network — but also presents an attack surface if the OpenVPN daemon has known CVEs or if authentication is weak.",
+    "impact": "If TLS auth is disabled, the endpoint accepts the first stage of the handshake from anyone — useful for fingerprinting and exhausting server resources. If certificate-based auth is enabled and private keys are protected, exposure is purely informational. Recent OpenVPN CVEs (CVE-2022-0547, CVE-2023-7235) affect specific older versions.",
+    "remediation": "Ensure OpenVPN is upgraded to the latest version. Enable `tls-auth` (HMAC firewall) so unauthenticated handshake probes are silently dropped. Require certificate-based authentication and disable username/password fallback if not needed.",
+    "evidence_template": "OpenVPN P_CONTROL_HARD_RESET_SERVER_V2 response received from {{host}}:1194",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

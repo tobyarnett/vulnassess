@@ -1,0 +1,14 @@
+{
+  "sip_methods_disclosed": {
+    "severity": "low",
+    "title": "SIP Methods Disclosed (UDP/5060)",
+    "description": "A SIP (Session Initiation Protocol) endpoint responded to an OPTIONS request and disclosed the SIP methods it supports. Common on VoIP PBX systems and SIP gateways.",
+    "impact": "Service fingerprinting for VoIP attacks. If REGISTER is exposed, attackers can attempt SIP user enumeration and password brute-forcing (toll fraud risk). INVITE exposure allows unsolicited call attempts.",
+    "remediation": "Restrict UDP/5060 to known SIP trunk providers and authorized client IPs. Disable SIP REGISTER from untrusted networks. Enforce strong passwords for SIP accounts. Migrate to SIP over TLS (port 5061) for tenant-side connections.",
+    "evidence_template": "SIP OPTIONS response from {{host}}:5060 disclosed methods: {{methods}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

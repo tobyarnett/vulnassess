@@ -1,0 +1,14 @@
+{
+  "l2tp_endpoint_detected": {
+    "severity": "low",
+    "title": "L2TP Endpoint Detected",
+    "description": "An L2TP (Layer 2 Tunneling Protocol) server is responding to SCCRQ probes on UDP/1701. L2TP is typically used with IPsec encapsulation (L2TP/IPsec) — bare L2TP without IPsec is plaintext.",
+    "impact": "If used without IPsec, all tunnel traffic is in plaintext. With IPsec, exposure is similar to other VPN endpoints (information disclosure of service availability + attack surface if daemon has known CVEs).",
+    "remediation": "Verify L2TP is paired with IPsec on this endpoint (UDP/500 + UDP/4500 should also respond). If L2TP/IPsec is intentional, ensure the IPsec configuration uses strong crypto (AES-256, SHA-256, DH group 14+). If L2TP is exposed without IPsec, disable or wrap in IPsec.",
+    "evidence_template": "L2TP SCCRP response received from {{host}}:1701",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

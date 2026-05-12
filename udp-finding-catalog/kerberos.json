@@ -1,0 +1,14 @@
+{
+  "kerberos_kdc_detected": {
+    "severity": "info",
+    "title": "Kerberos KDC Detected (UDP/88)",
+    "description": "A Kerberos Key Distribution Center (KDC) is responding to AS-REQ messages on UDP/88. Combined with port 389 (LDAP) and port 445 (SMB), this strongly indicates the host is an Active Directory Domain Controller.",
+    "impact": "Informational — confirms the host's role. Becomes high-severity when combined with: (a) user-enumeration findings (`krb5-enum-users` succeeds), (b) AS-REP roastable accounts (no preauth required), (c) Kerberoastable service principal names. Cross-reference with Phase 3 AppAssess tools (kerbrute, impacket) for those follow-up checks.",
+    "remediation": "If this host is not intended to be an exposed KDC, restrict UDP/88 + UDP/389 at the firewall. For intentional DCs, ensure: (1) all user accounts require pre-authentication (UF_DONT_REQUIRE_PREAUTH flag is OFF), (2) service accounts use strong passwords (Kerberoast-resistant), (3) the KDC is patched against recent Kerberos vulns (CVE-2022-37966 etc.).",
+    "evidence_template": "Kerberos KDC responded to AS-REQ probe from {{host}}:88 (KRB-ERROR or AS-REP received)",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

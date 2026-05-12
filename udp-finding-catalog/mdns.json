@@ -1,0 +1,14 @@
+{
+  "mdns_service_enumeration": {
+    "severity": "low",
+    "title": "mDNS Service Enumeration Possible",
+    "description": "Multicast DNS (mDNS, RFC 6762) is responding to service-discovery queries on UDP/5353. The host advertises its available services (HTTP, IPP, AirPlay, etc.) without authentication.",
+    "impact": "Service inventory disclosure: an attacker on the same broadcast domain (or one with mDNS-relayed traffic across VLANs) learns what services run on the host. This narrows the target surface for follow-up attacks. Common on consumer devices, printers, and macOS/iOS systems that haven't been hardened.",
+    "remediation": "For server systems, disable mDNS unless required (most servers don't need it). On Linux: `systemctl disable avahi-daemon`. On macOS: configurable via launchctl. For network printers and IoT devices, restrict mDNS to specific VLANs at the switch level (no L2 relay to user segments).",
+    "evidence_template": "mDNS on {{host}}:5353 disclosed {{service_count}} service(s): {{services}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}

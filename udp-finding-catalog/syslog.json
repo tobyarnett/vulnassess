@@ -1,0 +1,14 @@
+{
+  "syslog_open_udp": {
+    "severity": "medium",
+    "title": "syslog UDP Listener Accessible",
+    "description": "A syslog daemon is accepting UDP messages on port 514 from an untrusted source. syslog/UDP has no authentication and no protocol-level integrity — any sender can inject messages, spoof source-IPs, and overwhelm the log stream.",
+    "impact": "Log integrity compromise: attackers can inject misleading log entries to confuse incident response or hide their own activity. Log-volume DoS: attackers can flood the syslog daemon with millions of fake messages, potentially filling disk or hiding real events. If the syslog daemon parses untrusted content into downstream systems (SIEM, log aggregation), this can become a vector for injection attacks against those systems.",
+    "remediation": "Restrict UDP/514 to known log-source IPs at the firewall. Better: migrate to syslog/TCP (port 514/tcp or 6514/tcp for syslog-over-TLS) which provides delivery confirmation and (with TLS) integrity. For systems requiring UDP, use rsyslog's `$AllowedSender` directive to limit accepted sources.",
+    "evidence_template": "UDP/514 on {{host}} accepted a syslog test message without authentication.",
+    "cwe_id": "CWE-345",
+    "owasp_ref": "A09:2021 Security Logging and Monitoring Failures",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}
