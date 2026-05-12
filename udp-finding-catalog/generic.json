@@ -1,0 +1,14 @@
+{
+  "udp_service_responding": {
+    "severity": "low",
+    "title": "UDP Service Responding",
+    "description": "An open UDP port was discovered responding to nmap version-detection probes. No specialized vulnerability check is implemented for this service yet — this is a baseline detection finding intended to give operators visibility into all exposed UDP services on the target.",
+    "impact": "Information disclosure: the service's existence and version (if banner-grabbed) is known to anyone reaching the port. Specific impact depends on the service — common UDP services that get flagged here include OpenVPN (1194), L2TP (1701), Kerberos (88), LDAP/CLDAP (389), syslog (514), and IPsec NAT-T (4500). Cross-reference the service+version with NVD (v1.16.0+) for known CVEs.",
+    "remediation": "If this service is not intentionally exposed at this network boundary, restrict it at the firewall. If it IS intended, ensure the service is patched to the latest version and that any service-specific authentication/encryption controls are configured correctly (e.g., for syslog: restrict to management VLAN; for OpenVPN: require certificate-based auth + strong cipher).",
+    "evidence_template": "nmap detected UDP port {{port}}/{{service}} responding on {{host}}. Version banner: {{version}}",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cve_refs": [],
+    "exploitdb_refs": []
+  }
+}
