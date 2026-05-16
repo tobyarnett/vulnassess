@@ -19,6 +19,7 @@
     "evidence_template": "ike-scan against {{host}}:500 received Aggressive Mode SA: {{sa_proposal}}",
     "cwe_id": "CWE-326",
     "owasp_ref": "A02:2021 Cryptographic Failures",
+    "cpe_match": [],
     "cve_refs": ["CVE-2002-1623"]
   },
   "ike_weak_encryption_3des": {

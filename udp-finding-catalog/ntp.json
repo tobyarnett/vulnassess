@@ -8,6 +8,7 @@
     "evidence_template": "NTP monlist response from {{host}} returned peer list — amplification possible.",
     "cwe_id": "CWE-400",
     "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cpe_match": ["cpe:2.3:a:ntp:ntp:*:*:*:*:*:*:*:*"],
     "cve_refs": ["CVE-2013-5211"],
     "exploitdb_refs": []
   },

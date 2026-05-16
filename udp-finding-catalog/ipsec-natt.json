@@ -8,6 +8,7 @@
     "evidence_template": "ike-scan against {{host}}:4500 with --nat-t received IKE handshake response",
     "cwe_id": "CWE-200",
     "owasp_ref": "A05:2021 Security Misconfiguration",
+    "cpe_match": [],
     "cve_refs": [],
     "exploitdb_refs": []
   }

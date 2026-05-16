@@ -8,6 +8,7 @@
     "evidence_template": "Host {{host}} accepted community \"{{community}}\" and exposed {{oid_count}} OIDs from the system MIB. sysDescr: {{sysdescr}}",
     "cwe_id": "CWE-798",
     "owasp_ref": "A07:2021 Identification and Authentication Failures",
+    "cpe_match": ["cpe:2.3:a:net-snmp:net-snmp:*:*:*:*:*:*:*:*"],
     "cve_refs": []
   },
   "snmp_data_dump_v2c": {

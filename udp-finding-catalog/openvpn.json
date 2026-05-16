@@ -8,7 +8,8 @@
     "evidence_template": "OpenVPN P_CONTROL_HARD_RESET_SERVER_V2 response received from {{host}}:1194",
     "cwe_id": "CWE-200",
     "owasp_ref": "A05:2021 Security Misconfiguration",
-    "cve_refs": [],
+    "cpe_match": ["cpe:2.3:a:openvpn:openvpn:*:*:*:*:*:*:*:*"],
+    "cve_refs": ["CVE-2022-0547", "CVE-2023-7235"],
     "exploitdb_refs": []
   }
 }
