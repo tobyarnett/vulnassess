@@ -1,1 +1,1 @@
-<create_port_list><name>CyberOne Maximum - All TCP + All UDP</name><comment>All 65535 TCP ports plus all 65535 UDP ports. Maximum coverage for deep scans.</comment><port_range>T:1-65535,U:1-65535</port_range></create_port_list>
+<create_port_list><name>CyberOne TCP Maximum</name><comment>All 65535 TCP ports. For maximum depth scans. UDP is handled by the separate CyberOne UDP scanner (Phase 4b), not GVM — GVM Community Edition is TCP-only.</comment><port_range>T:1-65535</port_range></create_port_list>
