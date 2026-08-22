@@ -10,5 +10,17 @@
     "owasp_ref": "A01:2021 Broken Access Control",
     "cve_refs": [],
     "exploitdb_refs": []
+  },
+  "cldap_service_responding": {
+    "severity": "info",
+    "title": "CLDAP Service Responding on UDP/389",
+    "description": "A Connectionless LDAP (CLDAP) service on UDP/389 answered an unauthenticated rootDSE query. No directory attributes were returned.",
+    "impact": "Confirms a CLDAP responder is reachable, which narrows an attacker's target list and exposes the host to CLDAP reflection/amplification abuse. No directory information was disclosed by this query, so this is an attack-surface observation rather than an information disclosure.",
+    "remediation": "CLDAP is normally only needed by Active Directory clients during domain discovery. If this host is not a domain controller serving external clients, restrict UDP/389 at the network boundary. If the responder is unexpected on this host, identify the listening service — CLDAP responders on non-AD devices are frequently a misconfiguration.",
+    "evidence_template": "CLDAP rootDSE query against {{host}}:389 received a response containing no directory attributes.",
+    "cwe_id": "CWE-200",
+    "owasp_ref": "A01:2021 Broken Access Control",
+    "cve_refs": [],
+    "exploitdb_refs": []
   }
 }
