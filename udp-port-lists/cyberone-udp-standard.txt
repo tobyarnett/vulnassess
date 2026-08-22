@@ -1,0 +1,20 @@
+# CyberOne UDP port list — scan_depth=standard
+# Top 100 UDP services + all CyberOne probe ports (102 ports)
+#
+# Consumed by remote-agent/shared/scanner/udp/portLists.js (agent Phase 4b AND
+# security-server scanner-api /scan/udp). This is the UDP source of truth.
+#
+# NOT the GVM port lists. gvm-port-lists/*.xml are TCP-only on purpose — GVM
+# Community Edition does not scan UDP (037c3fc). Before 2026-05-20 the UDP
+# scanner read its port list out of those XMLs; when they went TCP-only it
+# silently fell back to 3 ports and nobody noticed for three months. These
+# files exist so the two concerns can never be coupled again.
+#
+# INVARIANT: every port in PROBES_BY_PORT (shared/scanner/udp/index.js) MUST
+# appear in every list here. A probe on a port we never scan can never fire.
+# Reconciling this on 2026-08-22 added: 389/cldap, 1194/openvpn.
+# test-udp-port-lists.js enforces the invariant.
+#
+# Format: comma-separated ports and hyphenated ranges. '#' and blank lines are
+# ignored; the spec may wrap across lines.
+7,9,17,19,49,53,67-69,80,88,111,120,123,135-139,158,161-162,177,389,427,443,445,497,500,514-515,518,520,593,623,626,631,996-999,1022-1023,1025-1030,1194,1433-1434,1645-1646,1701,1718-1719,1812-1813,1900,2000,2048-2049,2222-2223,3283,3456,3703,4444,4500,5000,5060,5353,5632,9200,10000,17185,20031,30718,31337,32768-32769,32771,32815,33281,49152-49154,49156,49181-49182,49185-49186,49188,49190-49194,49200-49201,65024
